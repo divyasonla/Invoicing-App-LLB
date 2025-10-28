@@ -1,77 +1,88 @@
 {% extends "layout.html" %}
+{% include "NavBar.html" %}
 {% block body %}
-<div class="flex items-center mb-4 bg-amber-100 p-4 rounded-lg">
-  <!-- Heading left -->
-  <h1 class="text-3xl font-serif text-blue-900">Invoice List</h1>
 
-  <!-- Button right (ml-auto pushes it to end) -->
-  <a href="/invoice-create"
-     class="ml-auto bg-blue-400 hover:bg-blue-600 text-white text-lg px-4 py-2 rounded-2xl shadow">
-    Add
-  </a>
-</div>
-
-<div class="p-6 space-y-8">
-
-  {% for invoice in invoices %}
-  <div class="bg-white rounded-lg p-4 space-y-4 shadow">
-    <h3 class="text-xl font-bold text-gray-700">Invoice Number #{{ invoice.invoice_number }}</h3>
-    <p class="text-gray-600">Customer ID: {{ invoice.customer.id }}</p>
-    <p class="text-gray-600">Customer Name: {{ invoice.customer.username }}</p>
-    <p class="text-gray-600">Invoice Date: {{ invoice.invoice_date }}</p>
-    <p class="text-gray-500 font-semibold">Total Amount: {{ invoice.total_amount }}</p>
-    <p class="text-gray-600">Arn Number: {{ invoice.arn_number }}</p>
-
-
-    <!-- Items Table -->
-    <div class="overflow-x-auto">
-      <table class="w-full border border-gray-300 text-xs sm:text-sm text-left text-gray-700">
-        <thead class="bg-gray-100 text-gray-800 uppercase text-xs">
-          <tr>
-            <th class="px-4 py-2 border w-1/6">S.N</th>
-            <th class="px-4 py-2 border w-1/6">Item Name</th>
-            <th class="px-4 py-2 border w-1/6">Quantity</th>
-            <th class="px-4 py-2 border w-1/6">Unit Price</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in invoice.items %}
-          <tr class="border-t">
-            <td class="px-4 py-2 border w-1/6">{{ loop.index }}</td>
-            <td class="px-4 py-2 border w-1/6">{{ item.item_name }}</td>
-            <td class="px-4 py-2 border w-1/6">{{ item.quantity }}</td>
-            <td class="px-4 py-2 border w-1/6">{{ item.unit_price }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Actions -->
-    <div class="flex justify-end gap-4 mt-4">
-      <a href="{{ url_for('invoice_pdf', invoice_number=invoice.invoice_number) }}" target="_blank"
-         class="inline-block bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-700">
-        Download PDF
-      </a>
-
-      <a href="{{ url_for('update_invoice', invoice_number=invoice.invoice_number) }}" target="_blank"
-         class="inline-block py-2 px-4 bg-blue-400 hover:bg-blue-600 rounded text-black hover:text-white">
-        Update
-      </a>
-
-      <a href="{{ url_for('delete_invoice', invoice_number=invoice.invoice_number) }}"
-      class="inline-block py-2 px-4 bg-red-500 hover:bg-red-700 rounded text-white"       >
-    Delete
-      </a>
-      <a href="{{ url_for('arn_generation', invoice_number=invoice.invoice_number) }}" target="_blank">
-            <button class="py-2 px-4 bg-blue-400 hover:bg-blue-600 rounded text-black hover:text-white" >
-              ARN Generation
-            </button>
-          </a>
-    </div>
-
-    <hr>
+<div class="p-6 bg-gray-50 m-5 min-h-screen">
+  <div class="flex flex-wrap items-center mb-8 bg-white p-5 rounded-xl shadow-sm border border-gray-200">
+    <h1 class="text-3xl font-bold text-gray-800">Invoice List</h1>
+    <a href="/invoice-create"
+       class="ml-auto bg-blue-500 hover:bg-blue-600 text-white text-lg px-5 py-2 rounded-lg transition-all duration-200">
+      + Add Invoice
+    </a>
   </div>
-  {% endfor %}
+
+  <div class="space-y-6 m-5">
+    {% for invoice in invoices %}
+    <div class="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-6">
+      
+      <div class="flex flex-wrap justify-between items-center mb-3">
+        <h3 class="text-lg font-semibold text-gray-800">Invoice #{{ invoice.invoice_number }}</h3>
+        <span class="text-sm bg-blue-50 text-blue-700 px-3 py-1 rounded-full">Date: {{ invoice.invoice_date }}</span>
+      </div>
+
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-3 text-gray-700 mb-4">
+        <p><span class="font-medium text-gray-900">Customer ID:</span> {{ invoice.customer.id }}</p>
+        <p><span class="font-medium text-gray-900">Customer Name:</span> {{ invoice.customer.username }}</p>
+        <p><span class="font-medium text-gray-900">ARN Number:</span> {{ invoice.arn_number or "N/A" }}</p>
+        <p class="sm:col-span-2 md:col-span-3 font-semibold text-green-700">
+          Total Amount: <span class="text-gray-900">${{ invoice.total_amount }}</span>
+        </p>
+      </div>
+
+      <div class="overflow-x-auto border border-gray-100 rounded-lg">
+        <table class="w-full text-sm text-left text-gray-700">
+          <thead class="bg-gray-100 text-gray-800 uppercase text-xs font-semibold">
+            <tr>
+              <th class="px-4 py-3 border">S.N</th>
+              <th class="px-4 py-3 border">Item Name</th>
+              <th class="px-4 py-3 border">Quantity</th>
+              <th class="px-4 py-3 border">Unit Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in invoice.items %}
+            <tr class="border-t hover:bg-gray-50">
+              <td class="px-4 py-2 border">{{ loop.index }}</td>
+              <td class="px-4 py-2 border">{{ item.item_name }}</td>
+              <td class="px-4 py-2 border">{{ item.quantity }}</td>
+              <td class="px-4 py-2 border">${{ item.unit_price }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="flex flex-wrap justify-end gap-3 mt-4">
+        <a href="{{ url_for('invoice_pdf', invoice_number=invoice.invoice_number) }}" target="_blank"
+           class="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-medium transition">
+           Download PDF
+        </a>
+      
+        <a href="{{ url_for('update_invoice', invoice_number=invoice.invoice_number) }}" target="_blank"
+           class="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-medium transition">
+           Update
+        </a>
+      
+        <a href="{{ url_for('delete_invoice', invoice_number=invoice.invoice_number) }}"
+           class="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-medium transition">
+           Delete
+        </a>
+      
+        <a href="{{ url_for('arn_generation', invoice_number=invoice.invoice_number) }}" target="_blank"
+           class="px-4 py-2 rounded-lg bg-green-500 hover:bg-green-600 text-white font-medium transition">
+           ARN Generation
+        </a>
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
 </div>
+
+<style>
+.action-btn {
+  @apply inline-block px-4 py-2 rounded-md font-medium text-sm transition-all duration-200 shadow-sm;
+}
+</style>
+
 {% endblock %}

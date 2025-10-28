@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% include "NavBar.html" %}
 {% block title %}Invoice{% endblock %}
 
 {% block body %}
@@ -47,10 +48,8 @@
     </div>
   </form>
 
-  <!-- Overlay -->
   <div id="overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:40;"></div>
 
-  <!-- Add Item Dialog -->
   <div id="itemDialog" style="display:none; position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); background:#fff; padding:18px; border-radius:8px; z-index:50; width:320px; box-shadow:0 8px 24px rgba(0,0,0,0.2);">
     <h3 class="mb-2">Add Item</h3>
 
@@ -70,7 +69,6 @@
   </div>
 </div>
 
-<!-- External autocomplete script -->
 <script src="{{ url_for('static', filename='autocomp.js') }}"></script>
 
 <script>

@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
+{% include "NavBar.html" %}
 {% block body %}
 <div class="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8 mt-6">
   <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3">Update Invoice</h2>
 
   <form method="POST" class="space-y-6">
-    <!-- Customer -->
     <div>
       <label class="block font-medium text-gray-700 mb-1">Customer</label>
       <input type="text" id="customer" value="{{ invoice.customer.username }}" 
@@ -13,14 +13,12 @@
       <div id="suggestions" class="border  border-gray-300 bg-white absolute z-10 w-1/3 rounded shadow"></div>
     </div>
 
-    <!-- Invoice Date -->
     <div>
       <label class="block font-medium text-gray-700 mb-1">Invoice Date</label>
       <input type="date" name="invoice_date" value="{{ invoice.invoice_date }}" 
              class="w-full p-2 border  border-gray-300 rounded bg-gray-50">
     </div>
 
-    <!-- Total Amount -->
     <div>
       <label class="block font-medium text-gray-700 mb-1">Total Amount</label>
       <input type="text" id="totalAmount" name="total_amount" 
@@ -28,7 +26,6 @@
              class="w-full p-2 border  border-gray-300 rounded bg-gray-100 font-semibold text-right">
     </div>
 
-    <!-- Items Table -->
     <div>
       <h3 class="text-lg font-semibold text-gray-800 mb-3">Items</h3>
       <div class="overflow-x-auto">
@@ -74,7 +71,6 @@
         </table>
       </div>
 
-      <!-- Add Item -->
       <div class="mt-4">
         <button type="button" id="add-item" 
                 class="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-lg shadow">
@@ -83,7 +79,6 @@
       </div>
     </div>
 
-    <!-- Submit -->
     <div class="text-right">
       <button type="submit" 
               class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow">
@@ -93,7 +88,6 @@
   </form>
 </div>
 
-<!-- Scripts -->
 <script src="{{ url_for('static', filename='autocomp.js') }}"></script>
 <script>
   alert("{{ alert }}");

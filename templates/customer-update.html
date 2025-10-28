@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% include "NavBar.html" %}
 {% block title %}Customer Update{% endblock %}
 
 {% block body %}
@@ -32,9 +33,7 @@
             required
           >{{ customer.address }}</textarea>
       </div>
-    <!-- <input type="text" value="{{ customer.username }}" name="username" placeholder="Name" required><br>
-    <input type="text" value="{{ customer.email }}" name="email" placeholder="email" required><br>
-    <input type="text" value="{{ customer.address }}" name="address" placeholder="address" required><br> -->
+    
     <button 
       class="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg shadow-md hover:bg-blue-600 transition"
       type="submit">submit</button>

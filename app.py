@@ -57,7 +57,6 @@ def delete_customer(id):
     customer = Customer.get_by_id(id)
     if not customer:
         return "<script>alert('Customer Not Found')</script>"
-    # else:
     customer.delete_instance()
     return "<script>alert('Customer Delete Successfully')</script>"
 
@@ -138,8 +137,8 @@ def update_invoice(invoice_number):
         invoice.invoice_date = request.form.get("invoice_date")
         invoice.save()
 
-        # Update items
-        item_ids = request.form.getlist("item_id[]")   # hidden inputs for existing items
+      
+        item_ids = request.form.getlist("item_id[]")   
         item_names = request.form.getlist("item_name[]")
         qtys = request.form.getlist("qty[]")
         prices = request.form.getlist("price[]")
@@ -167,7 +166,6 @@ def delete_invoice(invoice_number):
     return render_template('invoice-list.html', invoices=invoices)
 
 
-#weasyprint 
 
 @app.route("/invoices/<string:invoice_number>/pdf", methods=["GET"])
 def invoice_pdf(invoice_number):
@@ -321,15 +319,36 @@ def arn_generation(invoice_number):
         "message": "ARN saved successfully",
         "arn_number": arn_number
     }), 200
-
+@app.route("/api/dashboard")
+def dashboard_data():
+    data = {
+        "total_invoices": 12,
+        "total_customers": 5,
+        "total_amount": 4500.75,
+        "paid_amount": 3200.50
+    }
+    return jsonify(data)
 
 @app.route('/')
 def home():
     if "user_id" not in session:
         flash("Please login first!", "error")
         return redirect(url_for("login"))
+
+    total_customers = Customer.select().count()
+    total_invoices = Invoice.select().count()
+
+    from peewee import fn
+    total_amount = Invoice.select(fn.SUM(Invoice.total_amount)).scalar() or 0
     
-    return render_template("home.html", username=session["username"])
+    
+    return render_template(
+        "home.html",
+        username=session["username"],
+        total_customers=total_customers,
+        total_invoices=total_invoices,
+        total_amount=total_amount
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)

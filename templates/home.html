@@ -1,11 +1,113 @@
 {% extends "layout.html" %}
 
-{% block title %} {% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block body %}
-<nav class="text-right space-x-5 bg-blue-200 p-5 m-5">
-    <a class="text-lg uppercase" href="/customer">customer</a>
-    <a class="text-lg uppercase" href="/invoice">Invoice</a>
-    <a class="text-lg text-red-400 " href="/logout">Logout</a>
-</nav>
+{% include "NavBar.html" %}
+
+<div class="p-8 bg-gradient-to-b from-gray-50 to-white min-h-screen font-sans">
+  <div class="mb-12 fade-in">
+    <p class="text-gray-600 text-lg">Welcome back! Here’s your business overview.</p>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      
+      <div class="stat-card border-t-4 border-indigo-500">
+        <div class="icon bg-indigo-100 text-indigo-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 17v2a2 2 0 002 2h2a2 2 0 002-2v-2m-7-8h8M5 7h14a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2V9a2 2 0 012-2z" />
+          </svg>
+        </div>
+        <p class="text-gray-600 font-medium mt-2">Total Invoices</p>
+        <h2 class="text-3xl font-bold text-gray-900 mt-1" id="totalInvoices">0</h2>
+      </div>
+
+      <div class="stat-card border-t-4 border-purple-500">
+        <div class="icon bg-purple-100 text-purple-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 20h5v-2a4 4 0 00-3-3.87V9a4 4 0 00-8 0v5.13A4 4 0 008 18v2h9zM5 20h2v-2a2 2 0 00-2-2H3v4z" />
+          </svg>
+        </div>
+        <p class="text-gray-600 font-medium mt-2">Total Customers</p>
+        <h2 class="text-3xl font-bold text-gray-900 mt-1" id="totalCustomers">0</h2>
+      </div>
+
+      <div class="stat-card border-t-4 border-green-500">
+        <div class="icon bg-green-100 text-green-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 8c-1.657 0-3 1.343-3 3 0 1.306.835 2.417 2 2.83V17h2v-3.17a3.001 3.001 0 002-2.83c0-1.657-1.343-3-3-3z" />
+          </svg>
+        </div>
+        <p class="text-gray-600 font-medium mt-2">Total Amount</p>
+        <h2 class="text-3xl font-bold text-green-600 mt-1" id="totalAmount">$0.00</h2>
+      </div>
+
+      <div class="stat-card border-t-4 border-blue-500">
+        <div class="icon bg-blue-100 text-blue-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M11 17l-4-4m0 0l4-4m-4 4h12" />
+          </svg>
+        </div>
+        <p class="text-gray-600 font-medium mt-2">Paid Amount</p>
+        <h2 class="text-3xl font-bold text-blue-600 mt-1" id="paidAmount">$0.00</h2>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const response = await fetch('/api/dashboard');
+    const data = await response.json();
+
+    document.getElementById('totalInvoices').textContent = data.total_invoices || 0;
+    document.getElementById('totalCustomers').textContent = data.total_customers || 0;
+    document.getElementById('totalAmount').textContent = `$${(data.total_amount || 0).toFixed(2)}`;
+    document.getElementById('paidAmount').textContent = `$${(data.paid_amount || 0).toFixed(2)}`;
+  } catch (error) {
+    console.error('Error loading dashboard data:', error);
+  }
+});
+</script>
+
+<style>
+.fade-in {
+  animation: fadeIn 0.6s ease-in-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.stat-card {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.75rem;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: all 0.25s ease;
+}
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 9999px;
+  margin-bottom: 0.25rem;
+}
+</style>
+
 {% endblock %}
