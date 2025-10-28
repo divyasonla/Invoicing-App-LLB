@@ -7,12 +7,12 @@
 
 <div class="p-8 bg-gradient-to-b from-gray-50 to-white min-h-screen font-sans">
   <div class="mb-12 fade-in">
-    <p class="text-gray-600 text-lg">Welcome back! Here’s your business overview.</p>
+    <p class="text-gray-600 text-lg">Welcome back, {{ username }}! Here’s your business overview.</p>
   </div>
 
   <div class="max-w-7xl mx-auto px-4">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-      
+
       <div class="stat-card border-t-4 border-indigo-500">
         <div class="icon bg-indigo-100 text-indigo-600">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -21,7 +21,7 @@
           </svg>
         </div>
         <p class="text-gray-600 font-medium mt-2">Total Invoices</p>
-        <h2 class="text-3xl font-bold text-gray-900 mt-1" id="totalInvoices">0</h2>
+        <h2 class="text-3xl font-bold text-gray-900 mt-1">{{ total_invoices }}</h2>
       </div>
 
       <div class="stat-card border-t-4 border-purple-500">
@@ -32,7 +32,7 @@
           </svg>
         </div>
         <p class="text-gray-600 font-medium mt-2">Total Customers</p>
-        <h2 class="text-3xl font-bold text-gray-900 mt-1" id="totalCustomers">0</h2>
+        <h2 class="text-3xl font-bold text-gray-900 mt-1">{{ total_customers }}</h2>
       </div>
 
       <div class="stat-card border-t-4 border-green-500">
@@ -43,39 +43,13 @@
           </svg>
         </div>
         <p class="text-gray-600 font-medium mt-2">Total Amount</p>
-        <h2 class="text-3xl font-bold text-green-600 mt-1" id="totalAmount">$0.00</h2>
+        <h2 class="text-3xl font-bold text-green-600 mt-1">${{ "%.2f"|format(total_amount) }}</h2>
       </div>
 
-      <div class="stat-card border-t-4 border-blue-500">
-        <div class="icon bg-blue-100 text-blue-600">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M11 17l-4-4m0 0l4-4m-4 4h12" />
-          </svg>
-        </div>
-        <p class="text-gray-600 font-medium mt-2">Paid Amount</p>
-        <h2 class="text-3xl font-bold text-blue-600 mt-1" id="paidAmount">$0.00</h2>
-      </div>
-
+     
     </div>
   </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-  try {
-    const response = await fetch('/api/dashboard');
-    const data = await response.json();
-
-    document.getElementById('totalInvoices').textContent = data.total_invoices || 0;
-    document.getElementById('totalCustomers').textContent = data.total_customers || 0;
-    document.getElementById('totalAmount').textContent = `$${(data.total_amount || 0).toFixed(2)}`;
-    document.getElementById('paidAmount').textContent = `$${(data.paid_amount || 0).toFixed(2)}`;
-  } catch (error) {
-    console.error('Error loading dashboard data:', error);
-  }
-});
-</script>
 
 <style>
 .fade-in {

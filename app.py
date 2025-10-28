@@ -337,18 +337,30 @@ def home():
 
     total_customers = Customer.select().count()
     total_invoices = Invoice.select().count()
-
-    from peewee import fn
     total_amount = Invoice.select(fn.SUM(Invoice.total_amount)).scalar() or 0
-    
     
     return render_template(
         "home.html",
-        username=session["username"],
+        username=session.get("username"),
         total_customers=total_customers,
         total_invoices=total_invoices,
-        total_amount=total_amount
+        total_amount=total_amount,
+        
     )
 
+
+# Optional: API route if you want the dashboard to update dynamically via JS
+@app.route('/api/dashboard')
+def api_dashboard():
+    total_customers = Customer.select().count()
+    total_invoices = Invoice.select().count()
+    total_amount = Invoice.select(fn.SUM(Invoice.total_amount)).scalar() or 0
+    
+    return jsonify({
+        "total_customers": total_customers,
+        "total_invoices": total_invoices,
+        "total_amount": float(total_amount),
+        
+    })
 if __name__ == "__main__":
     app.run(debug=True)
